@@ -11,8 +11,8 @@ const petSchema = new mongoose.Schema({
   image: String,
   votes: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 }, { timestamps: true });
 
 const Pet = mongoose.model('Pet', petSchema);
