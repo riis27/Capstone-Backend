@@ -1,4 +1,3 @@
-// routes/pets.js
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const Pet = require("../models/Pet");
@@ -21,7 +20,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// ✅ GET /pets — Fetch all pets (public)
+// ✅ GET /api/pets — Fetch all pets (public)
 router.get("/", async (req, res) => {
   try {
     const pets = await Pet.find().sort({ createdAt: -1 });
@@ -32,7 +31,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ POST /pets — Add a pet (private/admin)
+// ✅ POST /api/pets — Add a pet (private/admin)
 router.post("/", verifyToken, async (req, res) => {
   try {
     const { name, age, breed, sex, disposition, traits, image } = req.body;
@@ -60,7 +59,7 @@ router.post("/", verifyToken, async (req, res) => {
   }
 });
 
-// ✅ PATCH /pets/:id/vote — Upvote or downvote pet
+// ✅ PATCH /api/pets/:id/vote — Upvote or downvote
 router.patch("/:id/vote", async (req, res) => {
   const { voteType } = req.body;
 
@@ -78,6 +77,39 @@ router.patch("/:id/vote", async (req, res) => {
   } catch (err) {
     console.error("Vote Error:", err.message);
     res.status(500).json({ message: "Error updating vote", error: err.message });
+  }
+});
+
+// ✅ PATCH /api/pets/:id — Update pet details
+router.patch("/:id", async (req, res) => {
+  try {
+    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedPet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    res.status(200).json(updatedPet);
+  } catch (err) {
+    console.error("Update Pet Error:", err.message);
+    res.status(500).json({ message: "Error updating pet", error: err.message });
+  }
+});
+
+// ✅ DELETE /api/pets/:id — Remove a pet
+router.delete("/:id", async (req, res) => {
+  try {
+    const pet = await Pet.findByIdAndDelete(req.params.id);
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+    res.status(200).json({ message: "Pet deleted successfully" });
+  } catch (err) {
+    console.error("Delete Error:", err.message);
+    res.status(500).json({ message: "Error deleting pet", error: err.message });
   }
 });
 

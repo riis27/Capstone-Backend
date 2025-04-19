@@ -4,7 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
-const messageRoutes = require('./routes/messages');
+const messageRoutes = require('./routes/messages.js');
 const petRoutes = require('./routes/pets.js');
 const authRoutes = require('./routes/authRoutes.js');
 const newsletterRoutes = require('./routes/newsletter.js');
@@ -32,7 +32,7 @@ mongoose.connect(process.env.MONGO_URI, {
   });
 
 // Routes
-app.use('/pets', petRoutes);
+app.use('/api/pets', petRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api/newsletter', newsletterRoutes);
